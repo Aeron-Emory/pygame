@@ -76,24 +76,6 @@ def MapBoard(x, y):
     y = (y - y * (1 / 18)) / 16
     return x, y
 
-def drawPlayer(screen, pawn):
-    xpos = int()
-    ypos = int()
-    for index in range(0, pawn.pos):
-        xpos = arrayX[index]
-        ypos = arrayY[index]
-        xpos += 1
-        print("length: ",len(arrayX), len(arrayY))
-        if xpos >= len(arrayX):
-            xpos = 0
-            ypos += 1
-        if ypos >= len(arrayY):
-            ypos = 0
-            xpos = 0
-    print("X Position: ", xpos, arrayX[xpos], arrayY[ypos])
-    print("Y Position: ", ypos, arrayX[xpos], arrayY[ypos])
-    screen.blit(circle_image, circle_image.get_rect(topleft=(25, 25)))
-
 class PlayPawn():
     def __init__(self, pawn):
         self.pawn = pawn
@@ -101,17 +83,16 @@ class PlayPawn():
         self.x = 25
         self.y = 25
 
-    def draw(self, screen, newPos):
-        IncPos = newPos - self.pos
-        self.pos = newPos
+    def draw(self, screen, newPos): # now newPos is 3
+        IncPos = newPos - self.pos # pos is 4 and newPos is 3, so IncPos = -1
+        self.pos = newPos # pos is now updated to 3
         Ix, Iy = MapBoard(900, 900)
-        if IncPos != 0:
-            if newPos >= 0 and newPos <= 61:
-                self.x = self.x + Ix
-                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
-            elif newPos < 0:
-                self.x = self.x - Ix
-                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y - Iy)))
+        if IncPos > 0:
+            self.x = self.x + Ix # right
+            screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
+        elif IncPos < 0:
+            self.x = self.x - Ix # left
+            screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
         else:
             screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
 
@@ -154,10 +135,10 @@ while running:
         screen.fill((0, 0, 0))
         screen.blit(board, (0, 0))
         back = menubutton("Back", 100, 100).draw(screen, mouse_pos)
-        down = menubutton("down", 100, 200).draw(screen, mouse_pos)
-        up = menubutton("up", 100, 300).draw(screen, mouse_pos)
-        backward = menubutton("backward", 100, 400).draw(screen, mouse_pos)
-        forward = menubutton("forward", 100, 500).draw(screen, mouse_pos)
+        down = menubutton("LEFT", 100, 200).draw(screen, mouse_pos)
+        up = menubutton("RIGHT", 100, 300).draw(screen, mouse_pos)
+        backward = menubutton("UP", 100, 400).draw(screen, mouse_pos)
+        forward = menubutton("DOWN", 100, 500).draw(screen, mouse_pos)
         #drawPlayer(screen, p1)
         p.draw(screen, n)
         if back and click_released:
@@ -166,12 +147,15 @@ while running:
 
         if up and click_released:
             click_released = False
-            n += 1
+            n += p1.pos + 1
             p.draw(screen, n)
-
+        if down and click_released:
+            click_released = False
+            n += p1.pos - 1
+            p.draw(screen, n)
         if forward and click_released:
             if p1.pos <= 61:
-                n += 1
+                n = p1.pos + 1
                 p.draw(screen, n)
                 click_released = False
             else:
