@@ -90,22 +90,17 @@ class PlayPawn():
         if IncPos > 0:
             if self.pos >= -1 and self.pos <= 14:
                 self.x = self.x + Ix # right
-                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
             elif self.pos >= 15 and self.pos <= 29:
                 self.y = self.y + Iy # down
-                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
             elif self.pos >= 30 and self.pos <= 44:
                 self.x = self.x - Ix # left
-                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
             elif self.pos >= 45 and self.pos <= 59:
                 self.y = self.y - Iy # up
-                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
             elif self.pos >= 60 and self.pos <= 61:
                 self.x = self.x + Ix
-                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
             elif self.pos >= 62 and self.pos <= 67:
                 self.y = self.y + Iy
-                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
+            screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
             print(self.pos)
         elif IncPos < 0:
             self.x = self.x - Ix # left
