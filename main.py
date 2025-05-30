@@ -4,20 +4,22 @@ import pawn
 
 # pygame setup
 pygame.init()
-font = pygame.font.SysFont(None, 48)
+font = pygame.font.Font('assests\\font\\Bitrimus-BLAPB.ttf', 38)
 screen = pygame.display.set_mode((900, 900))
 clock = pygame.time.Clock()
 running = True
 click_released = True
+pygame.display.set_caption("Dude I'm so Sorry!")
 
-background = pygame.image.load("assests\\menu\\bg.png")
-board = pygame.image.load("assests\\game\\sorry_Board.jpg")
+background = pygame.image.load("assests\\menu\\bg.png").convert()
+board = pygame.image.load("assests\\game\\sorry_Board.jpg").convert()
 board = pygame.transform.scale(board, (900, 900))
 button_image = pygame.image.load("assests\\menu\\start.png").convert_alpha()
 circle_image = pygame.image.load("assests\\game\\circle.png").convert_alpha()
 circle_image = pygame.transform.scale(circle_image, (50, 50))
 button_rect = button_image.get_rect(topleft=(100, 100))
 p1 = pawn.pawn()
+n = 0
 arrayY = []
 arrayX = []
 def initializeBoard():
@@ -63,7 +65,17 @@ class menubutton:
             screen.blit(self.button_image, self.button_rect)
             screen.blit(self.text, self.text_rect)
             return True
-        
+
+def MapBoard(x, y):
+    """
+    Creates a Grid system for the game board.
+    :param x: height of the board.
+    :param y: length of the board.
+    """
+    x = (x - x * (1 / 18)) / 16
+    y = (y - y * (1 / 18)) / 16
+    return x, y
+
 def drawPlayer(screen, pawn):
     xpos = int()
     ypos = int()
@@ -80,7 +92,30 @@ def drawPlayer(screen, pawn):
             xpos = 0
     print("X Position: ", xpos, arrayX[xpos], arrayY[ypos])
     print("Y Position: ", ypos, arrayX[xpos], arrayY[ypos])
-    screen.blit(circle_image, circle_image.get_rect(topleft=(arrayX[xpos], arrayY[ypos])))
+    screen.blit(circle_image, circle_image.get_rect(topleft=(25, 25)))
+
+class PlayPawn():
+    def __init__(self, pawn):
+        self.pawn = pawn
+        self.pos = pawn.getBoardPostition()
+        self.x = 25
+        self.y = 25
+
+    def draw(self, screen, newPos):
+        IncPos = newPos - self.pos
+        self.pos = newPos
+        Ix, Iy = MapBoard(900, 900)
+        if IncPos != 0:
+            if newPos >= 0 and newPos <= 61:
+                self.x = self.x + Ix
+                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
+            elif newPos < 0:
+                self.x = self.x - Ix
+                screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y - Iy)))
+        else:
+            screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
+
+p = PlayPawn(p1)
 
 def cardDraw():
     return 5
@@ -114,6 +149,8 @@ while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.MOUSEBUTTONUP:
+                click_released = True
         screen.fill((0, 0, 0))
         screen.blit(board, (0, 0))
         back = menubutton("Back", 100, 100).draw(screen, mouse_pos)
@@ -121,23 +158,34 @@ while running:
         up = menubutton("up", 100, 300).draw(screen, mouse_pos)
         backward = menubutton("backward", 100, 400).draw(screen, mouse_pos)
         forward = menubutton("forward", 100, 500).draw(screen, mouse_pos)
-        drawPlayer(screen, p1)
+        #drawPlayer(screen, p1)
+        p.draw(screen, n)
         if back and click_released:
             click_released = False
             start = False
 
-        if forward:
+        if up and click_released:
+            click_released = False
+            n += 1
+            p.draw(screen, n)
+
+        if forward and click_released:
             if p1.pos <= 61:
-                p1.pos += 1
+                n += 1
+                p.draw(screen, n)
+                click_released = False
             else:
-                p1.pos = 0
-        if backward:
+                p.draw(screen, n)
+                click_released = False
+        if backward and click_released:
             if p1.pos >= 0:
                 p1.pos -= 1
+                p.draw(screen, n)
+                click_released = False
             else:
-                p1.pos = 61
+                p.draw(screen, n)
+                click_released = False
         pygame.display.flip()
-        print("length: ",len(arrayX), len(arrayY))
         clock.tick(60)
         # Here you would typically transition to the main game loop or another screen
     # flip() the display to put your work on screen
@@ -146,6 +194,5 @@ while running:
     if quit and click_released:
         click_released = False
         running = False
-    print("length: ",len(arrayX), len(arrayY))
 
 pygame.quit()
