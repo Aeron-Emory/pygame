@@ -100,14 +100,11 @@ class PlayPawn():
                 self.x = self.x + Ix
             elif self.pos >= 62 and self.pos <= 67:
                 self.y = self.y + Iy
-            screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
             print(self.pos)
         elif IncPos < 0:
             self.x = self.x - Ix # left
-            screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
             print(self.pos)
-        else:
-            screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
+        screen.blit(circle_image, circle_image.get_rect(topleft=(self.x, self.y)))
 
 p = PlayPawn(p1)
 
