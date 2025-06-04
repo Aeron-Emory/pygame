@@ -5,7 +5,8 @@ class player:
 
     def __init__(self):
         self.resetPlayer()
-        self.playerPawns = [pawn() for _ in range(self.NO_OF_PAWNS)]
+        # Initialize independent pawn instances for this player
+        self.playerPawns = [pawn.pawn() for _ in range(self.NO_OF_PAWNS)]
 
     def resetPlayer(self):
         self.color = ""
@@ -22,7 +23,7 @@ class player:
         self.positionHome = pos
 
     def getPawn(self, index):
-        return self.playerPawn[index]
+        return self.playerPawns[index]
 
     def getColor(self):
         return self.color
